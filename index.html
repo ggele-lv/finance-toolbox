@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>财务工具箱</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%231a3c34'/><text x='50' y='68' font-size='45' text-anchor='middle' fill='%23c9a96e' font-family='monospace'>$</text></svg>">
+<style>
+  :root {
+    --primary: #1a3c34;
+    --primary-light: #2d5a4f;
+    --accent: #c9a96e;
+    --bg: #f5f5f2;
+    --surface: #ffffff;
+    --border: #e0e0dc;
+    --text: #2c2c2c;
+    --text-secondary: #6b6b6b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 24px 32px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  header h1 span { color: var(--accent); }
+  header p {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 32px 24px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .tool-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+    border-color: var(--accent);
+  }
+
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 700;
+    font-family: "Consolas", monospace;
+  }
+
+  .tool-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .tool-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .tool-card .open-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--primary);
+    font-weight: 500;
+  }
+  .tool-card:hover .open-btn {
+    color: var(--accent);
+  }
+
+  .features {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 32px;
+    border: 1px solid var(--border);
+  }
+  .features h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .feature-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .feature-item .check {
+    width: 20px;
+    height: 20px;
+    background: #e6f4ea;
+    color: #1e7e34;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .feature-item p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  @media (max-width: 768px) {
+    .tools-grid {
+      grid-template-columns: 1fr;
+    }
+    .feature-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>财务<span>工具箱</span></h1>
+  <p>为财务人打造的轻效率工具集 · 数据全程本地处理 · 不出域</p>
+</header>
+
+<div class="container">
+
+  <div class="tools-grid">
+
+    <a href="vba.html" class="tool-card">
+      <div class="tool-icon">VBA</div>
+      <h3>VBA代码生成器</h3>
+      <p>凭证整理、流水核对、数据清洗、报表汇总4大高频场景，选场景填参数，自动生成可直接运行的VBA宏代码。</p>
+      <span class="open-btn">打开工具 →</span>
+    </a>
+
+    <a href="formula.html" class="tool-card">
+      <div class="tool-icon">fx</div>
+      <h3>Excel公式生成器</h3>
+      <p>VLOOKUP、XLOOKUP、SUMIFS、IF嵌套、日期文本处理，常用公式一键生成，告别记不住参数的烦恼。</p>
+      <span class="open-btn">打开工具 →</span>
+    </a>
+
+    <a href="ratio.html" class="tool-card">
+      <div class="tool-icon">%</div>
+      <h3>财务比率分析</h3>
+      <p>输入资产负债表和利润表关键数据，自动计算7大核心财务比率，生成雷达图和综合分析结论。</p>
+      <span class="open-btn">打开工具 →</span>
+    </a>
+
+  </div>
+
+  <div class="features">
+    <h2>为什么做这个工具箱</h2>
+    <div class="feature-list">
+      <div class="feature-item">
+        <div class="check">✓</div>
+        <p><strong>数据安全</strong>：所有计算和生成均在浏览器本地完成，财务数据不上传任何服务器。</p>
+      </div>
+      <div class="feature-item">
+        <div class="check">✓</div>
+        <p><strong>开箱即用</strong>：无需安装软件，打开网页就能用，生成的代码和公式直接复制到Excel。</p>
+      </div>
+      <div class="feature-item">
+        <div class="check">✓</div>
+        <p><strong>场景导向</strong>：针对财务、审计工作中的高频重复操作设计，不是泛泛的计算器。</p>
+      </div>
+      <div class="feature-item">
+        <div class="check">✓</div>
+        <p><strong>持续更新</strong>：根据实际工作中的新需求，持续增加新的工具和功能。</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  财务工具箱 · 为财务人打造的轻效率工具集
+</footer>
+
+</body>
+</html>

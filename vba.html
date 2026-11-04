@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>财务VBA自动化代码生成器</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%231a3c34'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23c9a96e' font-family='monospace'>V</text></svg>">
+<style>
+  :root {
+    --primary: #1a3c34;
+    --primary-light: #2d5a4f;
+    --accent: #c9a96e;
+    --bg: #f5f5f2;
+    --surface: #ffffff;
+    --border: #e0e0dc;
+    --text: #2c2c2c;
+    --text-secondary: #6b6b6b;
+    --code-bg: #1e1e1e;
+    --code-text: #d4d4d4;
+    --success: #3a7d44;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ===== 顶部 ===== */
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  header h1 span { color: var(--accent); }
+  .privacy-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+  .privacy-badge .dot {
+    width: 8px; height: 8px;
+    background: #6fd47e;
+    border-radius: 50%;
+  }
+
+  /* ===== 主工作区 ===== */
+  .workspace {
+    display: grid;
+    grid-template-columns: 220px 1fr 1fr;
+    gap: 0;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* ===== 左侧场景选择 ===== */
+  .scene-panel {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+  }
+  .scene-panel .panel-title {
+    padding: 0 20px 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .scene-item {
+    padding: 14px 20px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .scene-item:hover { background: #f0f0ec; }
+  .scene-item.active {
+    border-left-color: var(--accent);
+    background: #f8f4ea;
+  }
+  .scene-item .name {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .scene-item .desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  /* ===== 中间参数区 ===== */
+  .param-panel {
+    padding: 28px 32px;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  .param-panel h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .param-panel .scene-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .form-group label .hint {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-left: 6px;
+  }
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 14px;
+    background: var(--surface);
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-light);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .generate-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s;
+  }
+  .generate-btn:hover { background: var(--primary-light); }
+
+  /* ===== 右侧代码区 ===== */
+  .code-panel {
+    padding: 28px 32px;
+    background: var(--code-bg);
+    display: flex;
+    flex-direction: column;
+  }
+  .code-panel .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .code-panel .code-title {
+    color: #888;
+    font-size: 12px;
+    font-family: "Consolas", monospace;
+  }
+  .copy-btn {
+    padding: 6px 16px;
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: rgba(201,169,110,0.1); }
+  .copy-btn.copied {
+    background: var(--accent);
+    color: #fff;
+  }
+  .code-area {
+    flex: 1;
+    background: transparent;
+    color: var(--code-text);
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre;
+    overflow: auto;
+    min-height: 400px;
+  }
+  .code-placeholder {
+    color: #555;
+    font-style: italic;
+  }
+
+  /* ===== 底部 ===== */
+  footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) {
+    .workspace {
+      grid-template-columns: 1fr;
+    }
+    .form-group input,
+    .form-group select {
+      font-size: 16px;
+    }
+    .scene-panel {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+    }
+    .scene-panel .panel-title { display: none; }
+    .scene-item {
+      display: inline-block;
+      width: auto;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      margin-right: 4px;
+    }
+    .scene-item.active {
+      border-left: none;
+      border-bottom-color: var(--accent);
+    }
+    .param-panel { border-right: none; }
+    .code-panel { min-height: 300px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>财务VBA<span>自动化</span>代码生成器</h1>
+  <div class="privacy-badge">
+    <div class="dot"></div>
+    数据全程本地处理 · 不出域
+  </div>
+</header>
+
+<div class="workspace">
+
+  <!-- 左侧场景选择 -->
+  <aside class="scene-panel">
+    <div class="panel-title">高频场景</div>
+    <div id="sceneList"></div>
+  </aside>
+
+  <!-- 中间参数表单 -->
+  <section class="param-panel">
+    <h2 id="sceneName"></h2>
+    <p class="scene-desc" id="sceneDesc"></p>
+    <div id="paramForm"></div>
+    <button class="generate-btn" onclick="generateCode()">生成 VBA 代码</button>
+  </section>
+
+  <!-- 右侧代码预览 -->
+  <section class="code-panel">
+    <div class="code-header">
+      <span class="code-title" id="codeFilename">' 生成的宏代码</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">复制代码</button>
+    </div>
+    <div class="code-area" id="codeArea">
+      <span class="code-placeholder">// 选择左侧场景，填写参数后点击「生成 VBA 代码」</span>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  适用于 Excel 2016 及以上版本 · 生成代码可直接粘贴到 VBA 编辑器（Alt+F11）使用
+</footer>
+
+<script>
+// ===== 场景定义 =====
+const SCENES = {
+  voucher: {
+    name: '凭证整理',
+    desc: '按凭证字号汇总借贷方金额，自动生成试算平衡表，快速核对凭证数据。',
+    filename: 'Voucher_Summary.bas',
+    params: [
+      { key: 'sheetName', label: '数据表名称', type: 'text', default: 'Sheet1', hint: '存放凭证明细的工作表' },
+      { key: 'voucherCol', label: '凭证字号列', type: 'text', default: 'B', hint: '如 B 列' },
+      { key: 'dateCol', label: '凭证日期列', type: 'text', default: 'A', hint: '如 A 列' },
+      { key: 'summaryCol', label: '摘要列', type: 'text', default: 'C', hint: '如 C 列' },
+      { key: 'debitCol', label: '借方金额列', type: 'text', default: 'D', hint: '如 D 列' },
+      { key: 'creditCol', label: '贷方金额列', type: 'text', default: 'E', hint: '如 E 列' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2, hint: '通常从第2行开始' },
+    ],
+    generate: (p) => {
+      return `Sub 凭证整理汇总()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim lastRow As Long, i As Long
+    Dim dict As Object
+    Dim voucherNo As String
+    Dim debitSum As Double, creditSum As Double
+
+    Set ws = ThisWorkbook.Sheets("${p.sheetName}")
+    lastRow = ws.Cells(ws.Rows.Count, "${p.dateCol}").End(xlUp).Row
+
+    Set dict = CreateObject("Scripting.Dictionary")
+
+    ' 遍历凭证明细，按凭证字号汇总
+    For i = ${p.startRow} To lastRow
+        voucherNo = Trim(ws.Range("${p.voucherCol}" & i).Value)
+        If voucherNo <> "" Then
+            If Not dict.Exists(voucherNo) Then
+                dict.Add voucherNo, Array(0, 0, ws.Range("${p.dateCol}" & i).Value, ws.Range("${p.summaryCol}" & i).Value)
+            End If
+            debitSum = dict(voucherNo)(0) + ws.Range("${p.debitCol}" & i).Value
+            creditSum = dict(voucherNo)(1) + ws.Range("${p.creditCol}" & i).Value
+            dict(voucherNo) = Array(debitSum, creditSum, dict(voucherNo)(2), dict(voucherNo)(3))
+        End If
+    Next i
+
+    ' 输出到新工作表
+    Dim wsOut As Worksheet
+    Set wsOut = ThisWorkbook.Sheets.Add(After:=ws)
+    wsOut.Name = "凭证汇总"
+
+    wsOut.Range("A1").Value = "凭证字号"
+    wsOut.Range("B1").Value = "凭证日期"
+    wsOut.Range("C1").Value = "摘要"
+    wsOut.Range("D1").Value = "借方合计"
+    wsOut.Range("E1").Value = "贷方合计"
+    wsOut.Range("F1").Value = "差额"
+
+    i = 2
+    Dim key As Variant
+    For Each key In dict.Keys
+        wsOut.Range("A" & i).Value = key
+        wsOut.Range("B" & i).Value = dict(key)(2)
+        wsOut.Range("C" & i).Value = dict(key)(3)
+        wsOut.Range("D" & i).Value = dict(key)(0)
+        wsOut.Range("E" & i).Value = dict(key)(1)
+        wsOut.Range("F" & i).Value = dict(key)(0) - dict(key)(1)
+        i = i + 1
+    Next key
+
+    ' 格式化
+    wsOut.Range("A1:F1").Font.Bold = True
+    wsOut.Columns("D:F").NumberFormat = "#,##0.00"
+    wsOut.Columns("A:F").AutoFit
+
+    MsgBox "凭证汇总完成，共处理 " & dict.Count & " 张凭证", vbInformation
+End Sub`;
+    }
+  },
+
+  bankMatch: {
+    name: '流水核对',
+    desc: '银行流水与企业日记账双向匹配，标记已匹配/未匹配记录，快速定位差异。',
+    filename: 'Bank_Reconciliation.bas',
+    params: [
+      { key: 'bankSheet', label: '银行流水表名', type: 'text', default: '银行流水' },
+      { key: 'cashSheet', label: '企业日记账表名', type: 'text', default: '企业日记账' },
+      { key: 'amountCol', label: '金额列', type: 'text', default: 'C', hint: '两张表金额列一致' },
+      { key: 'dateCol', label: '日期列', type: 'text', default: 'A' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2 },
+      { key: 'matchMode', label: '匹配方式', type: 'select', options: ['按金额匹配', '按金额+日期匹配'], default: 0 },
+    ],
+    generate: (p) => {
+      const mode = p.matchMode === '按金额+日期匹配' ? '日期+金额' : '金额';
+      return `Sub 银行流水核对()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    ' 匹配方式: ${mode}
+    Dim wsBank As Worksheet, wsCash As Worksheet
+    Dim lastRowBank As Long, lastRowCash As Long
+    Dim i As Long, j As Long
+    Dim matchedBank() As Boolean, matchedCash() As Boolean
+
+    Set wsBank = ThisWorkbook.Sheets("${p.bankSheet}")
+    Set wsCash = ThisWorkbook.Sheets("${p.cashSheet}")
+
+    lastRowBank = wsBank.Cells(wsBank.Rows.Count, "${p.amountCol}").End(xlUp).Row
+    lastRowCash = wsCash.Cells(wsCash.Rows.Count, "${p.amountCol}").End(xlUp).Row
+
+    ReDim matchedBank(${p.startRow} To lastRowBank)
+    ReDim matchedCash(${p.startRow} To lastRowCash)
+
+    ' 标记匹配列
+    wsBank.Range("G1").Value = "匹配状态"
+    wsCash.Range("G1").Value = "匹配状态"
+
+    For i = ${p.startRow} To lastRowBank
+        Dim amtBank As Double, dateBank As Variant
+        amtBank = Round(wsBank.Range("${p.amountCol}" & i).Value, 2)
+        dateBank = wsBank.Range("${p.dateCol}" & i).Value
+
+        For j = ${p.startRow} To lastRowCash
+            If Not matchedCash(j) Then
+                Dim amtCash As Double, dateCash As Variant
+                amtCash = Round(wsCash.Range("${p.amountCol}" & j).Value, 2)
+                dateCash = wsCash.Range("${p.dateCol}" & j).Value
+
+                ${p.matchMode === '按金额+日期匹配'
+                  ? `If amtBank = amtCash And CDate(dateBank) = CDate(dateCash) Then`
+                  : `If amtBank = amtCash Then`}
+                    matchedBank(i) = True
+                    matchedCash(j) = True
+                    wsBank.Range("G" & i).Value = "已匹配"
+                    wsCash.Range("G" & j).Value = "已匹配"
+                    Exit For
+                End If
+            End If
+        Next j
+
+        If Not matchedBank(i) Then
+            wsBank.Range("G" & i).Value = "未匹配"
+        End If
+    Next i
+
+    For j = ${p.startRow} To lastRowCash
+        If Not matchedCash(j) Then
+            wsCash.Range("G" & j).Value = "未匹配"
+        End If
+    Next j
+
+    ' 统计
+    Dim unmatchedBank As Long, unmatchedCash As Long
+    unmatchedBank = WorksheetFunction.CountIf(wsBank.Range("G" & ${p.startRow} & ":G" & lastRowBank), "未匹配")
+    unmatchedCash = WorksheetFunction.CountIf(wsCash.Range("G" & ${p.startRow} & ":G" & lastRowCash), "未匹配")
+
+    MsgBox "核对完成！" & vbCrLf & _
+           "银行流水未匹配: " & unmatchedBank & " 笔" & vbCrLf & _
+           "企业日记账未匹配: " & unmatchedCash & " 笔", vbInformation
+End Sub`;
+    }
+  },
+
+  dataClean: {
+    name: '数据清洗',
+    desc: '一键去除重复行、处理空值、统一日期和数字格式，让原始数据变干净。',
+    filename: 'Data_Clean.bas',
+    params: [
+      { key: 'sheetName', label: '数据表名称', type: 'text', default: 'Sheet1' },
+      { key: 'dupCol', label: '去重依据列', type: 'text', default: 'A', hint: '按此列内容去重' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2 },
+      { key: 'dateCols', label: '日期格式列', type: 'text', default: 'A,B', hint: '逗号分隔多列' },
+      { key: 'numCols', label: '数字格式列', type: 'text', default: 'D,E,F', hint: '逗号分隔多列' },
+    ],
+    generate: (p) => {
+      return `Sub 数据清洗()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim lastRow As Long, i As Long
+    Dim cleaned As Long
+
+    Set ws = ThisWorkbook.Sheets("${p.sheetName}")
+    lastRow = ws.Cells(ws.Rows.Count, "${p.dupCol}").End(xlUp).Row
+
+    ' 1. 去除重复行
+    cleaned = 0
+    For i = lastRow To ${p.startRow} Step -1
+        If ws.Range("${p.dupCol}" & i).Value = "" Then
+            ws.Rows(i).Delete
+            cleaned = cleaned + 1
+        End If
+    Next i
+
+    ' 2. 统一日期格式
+    Dim dateCols As Variant, c As Variant
+    dateCols = Split("${p.dateCols}", ",")
+    For Each c In dateCols
+        c = Trim(c)
+        If c <> "" Then
+            ws.Range(c & ${p.startRow} & ":" & c & lastRow).NumberFormat = "yyyy-mm-dd"
+        End If
+    Next c
+
+    ' 3. 统一数字格式（千分位两位小数）
+    Dim numCols As Variant
+    numCols = Split("${p.numCols}", ",")
+    For Each c In numCols
+        c = Trim(c)
+        If c <> "" Then
+            ws.Range(c & ${p.startRow} & ":" & c & lastRow).NumberFormat = "#,##0.00"
+        End If
+    Next c
+
+    ' 4. 去除单元格前后空格
+    Dim usedRng As Range
+    Set usedRng = ws.UsedRange
+    For Each cell In usedRng
+        If VarType(cell.Value) = vbString Then
+            cell.Value = Trim(cell.Value)
+        End If
+    Next cell
+
+    MsgBox "数据清洗完成！" & vbCrLf & _
+           "删除空行: " & cleaned & " 行" & vbCrLf & _
+           "日期列已格式化: ${p.dateCols}" & vbCrLf & _
+           "数字列已格式化: ${p.numCols}", vbInformation
+End Sub`;
+    }
+  },
+
+  pivot: {
+    name: '报表汇总',
+    desc: '按指定维度自动分类汇总数据，生成汇总表，替代手动数据透视表。',
+    filename: 'Pivot_Summary.bas',
+    params: [
+      { key: 'srcSheet', label: '数据源表名', type: 'text', default: '明细数据' },
+      { key: 'dimCol', label: '汇总维度列', type: 'text', default: 'B', hint: '如按部门/科目汇总' },
+      { key: 'valCol', label: '汇总值列', type: 'text', default: 'D', hint: '要汇总的金额列' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2 },
+      { key: 'outName', label: '输出表名', type: 'text', default: '汇总表' },
+    ],
+    generate: (p) => {
+      return `Sub 报表汇总()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim wsSrc As Worksheet
+    Dim lastRow As Long, i As Long
+    Dim dict As Object
+    Dim key As String
+    Dim sumVal As Double, cnt As Long
+
+    Set wsSrc = ThisWorkbook.Sheets("${p.srcSheet}")
+    lastRow = wsSrc.Cells(wsSrc.Rows.Count, "${p.dimCol}").End(xlUp).Row
+
+    Set dict = CreateObject("Scripting.Dictionary")
+
+    ' 按维度汇总
+    For i = ${p.startRow} To lastRow
+        key = Trim(wsSrc.Range("${p.dimCol}" & i).Value)
+        If key <> "" Then
+            sumVal = wsSrc.Range("${p.valCol}" & i).Value
+            If dict.Exists(key) Then
+                dict(key)(0) = dict(key)(0) + sumVal
+                dict(key)(1) = dict(key)(1) + 1
+            Else
+                dict.Add key, Array(sumVal, 1)
+            End If
+        End If
+    Next i
+
+    ' 输出汇总表
+    Dim wsOut As Worksheet
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    ThisWorkbook.Sheets("${p.outName}").Delete
+    Application.DisplayAlerts = True
+    On Error GoTo 0
+
+    Set wsOut = ThisWorkbook.Sheets.Add
+    wsOut.Name = "${p.outName}"
+
+    wsOut.Range("A1").Value = "汇总维度"
+    wsOut.Range("B1").Value = "汇总金额"
+    wsOut.Range("C1").Value = "记录笔数"
+    wsOut.Range("D1").Value = "占比"
+
+    Dim totalSum As Double
+    totalSum = 0
+    For Each key In dict.Keys
+        totalSum = totalSum + dict(key)(0)
+    Next key
+
+    i = 2
+    For Each key In dict.Keys
+        wsOut.Range("A" & i).Value = key
+        wsOut.Range("B" & i).Value = dict(key)(0)
+        wsOut.Range("C" & i).Value = dict(key)(1)
+        If totalSum <> 0 Then
+            wsOut.Range("D" & i).Value = dict(key)(0) / totalSum
+        End If
+        i = i + 1
+    Next key
+
+    ' 合计行
+    wsOut.Range("A" & i).Value = "合计"
+    wsOut.Range("B" & i).Value = totalSum
+    wsOut.Range("C" & i).Value = WorksheetFunction.Sum(wsOut.Range("C2:C" & i - 1))
+    wsOut.Range("D" & i).Value = 1
+
+    ' 格式化
+    wsOut.Range("A1:D1").Font.Bold = True
+    wsOut.Range("B2:B" & i).NumberFormat = "#,##0.00"
+    wsOut.Range("D2:D" & i).NumberFormat = "0.00%"
+    wsOut.Range("A" & i & ":D" & i).Font.Bold = True
+    wsOut.Range("A" & i & ":D" & i).Borders(xlEdgeTop).LineStyle = xlContinuous
+    wsOut.Columns("A:D").AutoFit
+
+    MsgBox "汇总完成！共 " & (i - 2) & " 个维度，合计金额 " & Format(totalSum, "#,##0.00"), vbInformation
+End Sub`;
+    }
+  }
+};
+
+// ===== 状态 =====
+let currentScene = 'voucher';
+
+// ===== 渲染场景列表 =====
+function renderSceneList() {
+  const container = document.getElementById('sceneList');
+  container.innerHTML = '';
+  Object.entries(SCENES).forEach(([key, scene]) => {
+    const item = document.createElement('div');
+    item.className = 'scene-item' + (key === currentScene ? ' active' : '');
+    item.innerHTML = `<div class="name">${scene.name}</div><div class="desc">${scene.desc.slice(0, 18)}...</div>`;
+    item.onclick = () => { currentScene = key; renderSceneList(); renderParams(); };
+    container.appendChild(item);
+  });
+}
+
+// ===== 渲染参数表单 =====
+function renderParams() {
+  const scene = SCENES[currentScene];
+  document.getElementById('sceneName').textContent = scene.name;
+  document.getElementById('sceneDesc').textContent = scene.desc;
+  document.getElementById('codeFilename').textContent = "' " + scene.filename;
+
+  const form = document.getElementById('paramForm');
+  form.innerHTML = '';
+
+  scene.params.forEach((param, idx) => {
+    const group = document.createElement('div');
+    group.className = 'form-group';
+
+    const label = document.createElement('label');
+    label.innerHTML = `${param.label}<span class="hint">${param.hint || ''}</span>`;
+
+    let input;
+    if (param.type === 'select') {
+      input = document.createElement('select');
+      param.options.forEach((opt, i) => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        if (i === param.default) option.selected = true;
+        input.appendChild(option);
+      });
+    } else {
+      input = document.createElement('input');
+      input.type = param.type === 'number' ? 'number' : 'text';
+      input.value = param.default;
+    }
+    input.id = 'param_' + param.key;
+
+    group.appendChild(label);
+    group.appendChild(input);
+    form.appendChild(group);
+  });
+}
+
+// ===== 生成代码 =====
+function generateCode() {
+  const scene = SCENES[currentScene];
+  const params = {};
+  scene.params.forEach(p => {
+    const el = document.getElementById('param_' + p.key);
+    params[p.key] = el.value;
+  });
+
+  const code = scene.generate(params);
+  document.getElementById('codeArea').textContent = code;
+}
+
+// ===== 复制代码 =====
+function copyCode() {
+  const code = document.getElementById('codeArea').textContent;
+  if (!code || code.includes('选择左侧场景')) return;
+
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '已复制';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '复制代码';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ===== 初始化 =====
+renderSceneList();
+renderParams();
+</script>
+
+</body>
+</html>
