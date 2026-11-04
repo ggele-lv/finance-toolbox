@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>财务VBA自动化代码生成器</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%231a3c34'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23c9a96e' font-family='monospace'>V</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%2360a5fa'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23ffffff' font-family='monospace'>V</text></svg>">
 <style>
   :root {
-    --primary: #1a3c34;
-    --primary-light: #2d5a4f;
-    --accent: #c9a96e;
-    --bg: #f5f5f2;
+    --primary: #3b82f6;
+    --primary-light: #93c5fd;
+    --accent: #60a5fa;
+    --bg: #f0f9ff;
     --surface: #ffffff;
-    --border: #e0e0dc;
-    --text: #2c2c2c;
-    --text-secondary: #6b6b6b;
-    --code-bg: #1e1e1e;
-    --code-text: #d4d4d4;
-    --success: #3a7d44;
+    --border: #e0f2fe;
+    --text: #0c4a6e;
+    --text-secondary: #64748b;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --success: #059669;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -29,8 +29,8 @@
 
   /* ===== 顶部 ===== */
   header {
-    background: var(--primary);
-    color: #fff;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    color: var(--text);
     padding: 20px 32px;
     display: flex;
     align-items: center;
@@ -40,14 +40,16 @@
     font-size: 18px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    color: #0c4a6e;
   }
-  header h1 span { color: var(--accent); }
+  header h1 span { color: #3b82f6; }
   .privacy-badge {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    opacity: 0.9;
+    color: #0c4a6e;
+    opacity: 0.8;
   }
   .privacy-badge .dot {
     width: 8px; height: 8px;
@@ -70,13 +72,29 @@
     padding: 24px 0;
   }
   .scene-panel .panel-title {
-    padding: 0 20px 16px;
+    padding: 0 20px 12px;
     font-size: 12px;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
+  }
+  .search-box {
+    padding: 0 20px 16px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 12px;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    background: #f8fafc;
+  }
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
   }
   .scene-item {
     padding: 14px 20px;
@@ -84,10 +102,10 @@
     border-left: 3px solid transparent;
     transition: all 0.15s;
   }
-  .scene-item:hover { background: #f0f0ec; }
+  .scene-item:hover { background: #f0f9ff; }
   .scene-item.active {
-    border-left-color: var(--accent);
-    background: #f8f4ea;
+    border-left-color: var(--primary);
+    background: #eff6ff;
   }
   .scene-item .name {
     font-size: 14px;
@@ -97,6 +115,78 @@
   .scene-item .desc {
     font-size: 12px;
     color: var(--text-secondary);
+  }
+
+  /* 示例弹窗 */
+  .example-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .example-modal.show { display: flex; }
+  .example-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .example-content h3 {
+    font-size: 17px;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .example-content .example-block {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .example-content .example-block strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--primary);
+  }
+  .example-content pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  .close-modal {
+    margin-top: 12px;
+    padding: 8px 24px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  /* 下载按钮 */
+  .download-btn {
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .download-btn:hover {
+    border-color: var(--accent);
+    color: var(--primary);
   }
 
   /* ===== 中间参数区 ===== */
@@ -273,7 +363,10 @@
 
   <!-- 左侧场景选择 -->
   <aside class="scene-panel">
-    <div class="panel-title">高频场景</div>
+    <div class="panel-title">场景列表</div>
+    <div class="search-box">
+      <input type="text" id="sceneSearch" placeholder="搜索场景，如：拆分、去重..." oninput="renderSceneList()">
+    </div>
     <div id="sceneList"></div>
   </aside>
 
@@ -282,14 +375,20 @@
     <h2 id="sceneName"></h2>
     <p class="scene-desc" id="sceneDesc"></p>
     <div id="paramForm"></div>
-    <button class="generate-btn" onclick="generateCode()">生成 VBA 代码</button>
+    <div style="display:flex;gap:12px;">
+      <button class="generate-btn" style="flex:1;" onclick="generateCode()">生成 VBA 代码</button>
+      <button class="download-btn" style="padding:10px 16px;" onclick="showExample()">查看示例</button>
+    </div>
   </section>
 
   <!-- 右侧代码预览 -->
   <section class="code-panel">
     <div class="code-header">
       <span class="code-title" id="codeFilename">' 生成的宏代码</span>
-      <button class="copy-btn" id="copyBtn" onclick="copyCode()">复制代码</button>
+      <div style="display:flex;gap:8px;">
+        <button class="download-btn" onclick="downloadCode()">下载 .bas</button>
+        <button class="copy-btn" id="copyBtn" onclick="copyCode()">复制代码</button>
+      </div>
     </div>
     <div class="code-area" id="codeArea">
       <span class="code-placeholder">// 选择左侧场景，填写参数后点击「生成 VBA 代码」</span>
@@ -616,6 +715,286 @@ End Sub`;
     MsgBox "汇总完成！共 " & (i - 2) & " 个维度，合计金额 " & Format(totalSum, "#,##0.00"), vbInformation
 End Sub`;
     }
+  },
+
+  mergeSheets: {
+    name: '多表合并',
+    desc: '将当前工作簿所有工作表数据合并到一张总表，自动加来源列。',
+    filename: 'Merge_Sheets.bas',
+    params: [
+      { key: 'hasHeader', label: '每个Sheet有表头', type: 'select', options: ['是', '否'], default: '是', hint: '第一个Sheet的表头是否保留' },
+      { key: 'sourceCol', label: '添加来源列', type: 'select', options: ['是', '否'], default: '是', hint: '在最前面加一列标注数据来自哪个Sheet' },
+    ],
+    generate: (p) => {
+      const skipHeader = p.hasHeader === '是' ? '2' : '1';
+      const hasSource = p.sourceCol === '是';
+      return `Sub 多表合并到总表()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim wsOut As Worksheet
+    Dim lastRow As Long, lastCol As Long
+    Dim outRow As Long, i As Long, j As Long
+    Dim sheetCount As Integer
+    
+    ' 创建总表
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    ThisWorkbook.Sheets("总表").Delete
+    Application.DisplayAlerts = True
+    On Error GoTo 0
+    
+    Set wsOut = ThisWorkbook.Sheets.Add(Before:=ThisWorkbook.Sheets(1))
+    wsOut.Name = "总表"
+    outRow = 1
+    sheetCount = 0
+    
+    ' 遍历每个工作表
+    For Each ws In ThisWorkbook.Sheets
+        If ws.Name <> "总表" Then
+            lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
+            lastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
+            
+            If lastRow >= ${skipHeader} Then
+                sheetCount = sheetCount + 1
+                
+                ' 第一个Sheet写表头
+                If sheetCount = 1 Then
+                    ${hasSource ? 'wsOut.Cells(1, 1).Value = "来源表"\n                    For j = 1 To lastCol\n                        wsOut.Cells(1, j + 1).Value = ws.Cells(1, j).Value\n                    Next j' : 'For j = 1 To lastCol\n                        wsOut.Cells(1, j).Value = ws.Cells(1, j).Value\n                    Next j'}
+                    outRow = 2
+                End If
+                
+                ' 复制数据
+                For i = ${skipHeader} To lastRow
+                    ${hasSource ? 'wsOut.Cells(outRow, 1).Value = ws.Name\n                    For j = 1 To lastCol\n                        wsOut.Cells(outRow, j + 1).Value = ws.Cells(i, j).Value\n                    Next j' : 'For j = 1 To lastCol\n                        wsOut.Cells(outRow, j).Value = ws.Cells(i, j).Value\n                    Next j'}
+                    outRow = outRow + 1
+                Next i
+            End If
+        End If
+    Next ws
+    
+    wsOut.Columns.AutoFit
+    MsgBox "合并完成！共 " & sheetCount & " 个Sheet，" & (outRow - 1) & " 行数据", vbInformation
+End Sub`;
+    }
+  },
+
+  splitByColumn: {
+    name: '按列拆分',
+    desc: '按指定列的值，将数据拆分到多个工作表，每个值一个Sheet。',
+    filename: 'Split_By_Column.bas',
+    params: [
+      { key: 'sheetName', label: '数据表名称', type: 'text', default: 'Sheet1', hint: '待拆分的工作表' },
+      { key: 'splitCol', label: '拆分依据列', type: 'text', default: 'B', hint: '如 B 列，按这列的值拆分' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2, hint: '通常从第2行开始' },
+      { key: 'headerRow', label: '表头行号', type: 'number', default: 1, hint: '表头所在行' },
+    ],
+    generate: (p) => {
+      return `Sub 按列拆分工作表()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim wsOut As Worksheet
+    Dim lastRow As Long, lastCol As Long
+    Dim i As Long, outRow As Long
+    Dim splitVal As String
+    Dim dict As Object
+    
+    Set ws = ThisWorkbook.Sheets("${p.sheetName}")
+    lastRow = ws.Cells(ws.Rows.Count, "${p.splitCol}").End(xlUp).Row
+    lastCol = ws.Cells(${p.headerRow}, ws.Columns.Count).End(xlToLeft).Column
+    
+    Set dict = CreateObject("Scripting.Dictionary")
+    
+    ' 清除旧的拆分Sheet
+    Application.DisplayAlerts = False
+    Dim s As Worksheet
+    For Each s In ThisWorkbook.Sheets
+        If Left(s.Name, 4) = "拆分_" Then s.Delete
+    Next s
+    Application.DisplayAlerts = True
+    
+    ' 遍历数据
+    For i = ${p.startRow} To lastRow
+        splitVal = Trim(ws.Range("${p.splitCol}" & i).Value)
+        If splitVal <> "" Then
+            ' 清理文件名非法字符
+            splitVal = Replace(Replace(Replace(splitVal, "/", "_"), "\\", "_"), "?", "_")
+            
+            If Not dict.Exists(splitVal) Then
+                ' 创建新Sheet
+                Set wsOut = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
+                wsOut.Name = "拆分_" & Left(splitVal, 20)
+                
+                ' 复制表头
+                ws.Rows(${p.headerRow}).Copy wsOut.Rows(1)
+                dict.Add splitVal, wsOut.Name
+            End If
+            
+            ' 复制数据行
+            ws.Rows(i).Copy ThisWorkbook.Sheets(dict(splitVal)).Rows(ThisWorkbook.Sheets(dict(splitVal)).Cells(ThisWorkbook.Sheets(dict(splitVal)).Rows.Count, 1).End(xlUp).Row + 1)
+        End If
+    Next i
+    
+    MsgBox "拆分完成！共 " & dict.Count & " 个分组", vbInformation
+End Sub`;
+    }
+  },
+
+  markDuplicates: {
+    name: '去重标记',
+    desc: '按指定列标记重复数据，重复行标黄色，保留首次出现。',
+    filename: 'Mark_Duplicates.bas',
+    params: [
+      { key: 'sheetName', label: '数据表名称', type: 'text', default: 'Sheet1', hint: '待处理的工作表' },
+      { key: 'dupCol', label: '判断重复的列', type: 'text', default: 'A', hint: '如 A 列，按这列判断重复' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2, hint: '通常从第2行开始' },
+    ],
+    generate: (p) => {
+      return `Sub 标记重复数据()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim lastRow As Long, i As Long
+    Dim dict As Object
+    Dim cellVal As String
+    Dim dupCount As Long
+    
+    Set ws = ThisWorkbook.Sheets("${p.sheetName}")
+    lastRow = ws.Cells(ws.Rows.Count, "${p.dupCol}").End(xlUp).Row
+    
+    Set dict = CreateObject("Scripting.Dictionary")
+    dupCount = 0
+    
+    ' 清除原有颜色
+    ws.Range("${p.dupCol}${p.startRow}:${p.dupCol}" & lastRow).Interior.ColorIndex = xlNone
+    
+    For i = ${p.startRow} To lastRow
+        cellVal = Trim(ws.Range("${p.dupCol}" & i).Value)
+        If cellVal <> "" Then
+            If dict.Exists(cellVal) Then
+                ' 重复，标黄色
+                ws.Range("${p.dupCol}" & i).Interior.Color = RGB(255, 235, 156)
+                dupCount = dupCount + 1
+            Else
+                dict.Add cellVal, i
+            End If
+        End If
+    Next i
+    
+    MsgBox "标记完成！共发现 " & dupCount & " 条重复记录（已标黄）", vbInformation
+End Sub`;
+    }
+  },
+
+  batchFormat: {
+    name: '批量格式',
+    desc: '批量设置数字格式、边框、对齐，统一表格样式。',
+    filename: 'Batch_Format.bas',
+    params: [
+      { key: 'sheetName', label: '数据表名称', type: 'text', default: 'Sheet1', hint: '待格式化的工作表' },
+      { key: 'amountCol', label: '金额列', type: 'text', default: 'D', hint: '如 D 列，设置千分位格式' },
+      { key: 'startRow', label: '表头行号', type: 'number', default: 1, hint: '表头所在行' },
+      { key: 'endCol', label: '最后一列', type: 'text', default: 'F', hint: '如 F 列，到这列为止加边框' },
+    ],
+    generate: (p) => {
+      return `Sub 批量设置表格格式()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim rng As Range
+    
+    Set ws = ThisWorkbook.Sheets("${p.sheetName}")
+    lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
+    
+    ' 1. 金额列设置千分位格式
+    ws.Range("${p.amountCol}${p.startRow + 1}:${p.amountCol}" & lastRow).NumberFormat = "#,##0.00"
+    
+    ' 2. 表头样式
+    With ws.Range("A${p.startRow}:${p.endCol}${p.startRow}")
+        .Font.Bold = True
+        .Interior.Color = RGB(219, 234, 254)
+        .HorizontalAlignment = xlCenter
+    End With
+    
+    ' 3. 全表加边框
+    Set rng = ws.Range("A${p.startRow}:${p.endCol}" & lastRow)
+    rng.Borders(xlEdgeLeft).LineStyle = xlContinuous
+    rng.Borders(xlEdgeRight).LineStyle = xlContinuous
+    rng.Borders(xlEdgeTop).LineStyle = xlContinuous
+    rng.Borders(xlEdgeBottom).LineStyle = xlContinuous
+    rng.Borders(xlInsideHorizontal).LineStyle = xlContinuous
+    rng.Borders(xlInsideVertical).LineStyle = xlContinuous
+    
+    ' 4. 自动列宽
+    ws.Columns("A:${p.endCol}").AutoFit
+    
+    MsgBox "格式设置完成！", vbInformation
+End Sub`;
+    }
+  },
+
+  amountToChinese: {
+    name: '金额大写',
+    desc: '将数字金额转换为中文大写金额（壹仟贰佰元整），用于报销单、支票。',
+    filename: 'Amount_To_Chinese.bas',
+    params: [
+      { key: 'sourceCol', label: '数字金额列', type: 'text', default: 'D', hint: '如 D 列，存放数字金额' },
+      { key: 'targetCol', label: '结果输出列', type: 'text', default: 'E', hint: '如 E 列，输出中文大写' },
+      { key: 'startRow', label: '数据起始行', type: 'number', default: 2, hint: '通常从第2行开始' },
+    ],
+    generate: (p) => {
+      return `Sub 金额转中文大写()
+    ' 生成时间: ${new Date().toLocaleString('zh-CN')}
+    Dim ws As Worksheet
+    Dim lastRow As Long, i As Long
+    Dim amount As Double
+    
+    Set ws = ActiveSheet
+    lastRow = ws.Cells(ws.Rows.Count, "${p.sourceCol}").End(xlUp).Row
+    
+    ' 写表头
+    ws.Range("${p.targetCol}1").Value = "中文大写金额"
+    
+    For i = ${p.startRow} To lastRow
+        amount = Val(ws.Range("${p.sourceCol}" & i).Value)
+        ws.Range("${p.targetCol}" & i).Value = NumToChinese(amount)
+    Next i
+    
+    MsgBox "转换完成！共 " & (lastRow - ${p.startRow} + 1) & " 行", vbInformation
+End Sub
+
+Function NumToChinese(ByVal n As Double) As String
+    ' 数字转中文大写金额
+    Dim digits As String, units As String, bigUnits As String
+    Dim intPart As Long, decPart As Integer
+    Dim s As String, i As Integer, d As Integer
+    Dim result As String
+    
+    digits = "零壹贰叁肆伍陆柒捌玖"
+    units = "分角元拾佰仟万拾佰仟亿拾佰仟"
+    
+    intPart = Int(n)
+    decPart = Round((n - intPart) * 100, 0)
+    
+    If intPart = 0 Then
+        result = "零元"
+    Else
+        s = CStr(intPart)
+        For i = 1 To Len(s)
+            d = CInt(Mid(s, i, 1))
+            result = result & Mid(digits, d + 1, 1) & Mid(units, Len(s) - i + 3, 1)
+        Next i
+    End If
+    
+    ' 处理小数
+    If decPart = 0 Then
+        result = result & "整"
+    Else
+        result = result & Mid(digits, Int(decPart / 10) + 1, 1) & "分"
+        result = result & Mid(digits, (decPart Mod 10) + 1, 1) & "角"
+    End If
+    
+    NumToChinese = result
+End Function`;
+    }
   }
 };
 
@@ -625,14 +1004,112 @@ let currentScene = 'voucher';
 // ===== 渲染场景列表 =====
 function renderSceneList() {
   const container = document.getElementById('sceneList');
+  const searchVal = document.getElementById('sceneSearch').value.toLowerCase();
   container.innerHTML = '';
+  let count = 0;
   Object.entries(SCENES).forEach(([key, scene]) => {
+    if (searchVal && !scene.name.toLowerCase().includes(searchVal) && !scene.desc.toLowerCase().includes(searchVal)) return;
+    count++;
     const item = document.createElement('div');
     item.className = 'scene-item' + (key === currentScene ? ' active' : '');
     item.innerHTML = `<div class="name">${scene.name}</div><div class="desc">${scene.desc.slice(0, 18)}...</div>`;
     item.onclick = () => { currentScene = key; renderSceneList(); renderParams(); };
     container.appendChild(item);
   });
+  if (count === 0) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:13px;">未找到匹配场景</div>';
+  }
+}
+
+// ===== 示例功能 =====
+const EXAMPLES = {
+  voucher: {
+    params: '数据表：Sheet1，凭证字号列：B，日期列：A，借方列：D，贷方列：E，起始行：2',
+    output: 'Sub 凭证整理汇总()\n  ...\n  MsgBox "汇总完成！共 X 张凭证..."\nEnd Sub',
+    note: '运行后会在当前Sheet后面新建一个"凭证汇总"工作表，按凭证字号汇总借贷方金额，自动检查借贷是否平衡。'
+  },
+  bankMatch: {
+    params: '银行流水：Sheet1，企业日记账：Sheet2，金额列：C，日期列：A，起始行：2',
+    output: 'Sub 双向匹配核对()\n  ...\n  MsgBox "匹配完成！未匹配 X 条..."\nEnd Sub',
+    note: '双向匹配：银行流水有但日记账没有的标红，日记账有但银行流水没有的标黄，匹配上的标绿。'
+  },
+  dataClean: {
+    params: '数据表：Sheet1，数据列：A到D，起始行：2',
+    output: 'Sub 数据清洗()\n  ...\n  MsgBox "清洗完成！..."\nEnd Sub',
+    note: '一键完成：去除首尾空格、删除空行、统一日期格式、去除重复值、数字格式统一。'
+  },
+  pivot: {
+    params: '数据表：Sheet1，维度列：B，金额列：D，起始行：2',
+    output: 'Sub 分类汇总报表()\n  ...\n  MsgBox "汇总完成！..."\nEnd Sub',
+    note: '按指定维度（如部门、科目）自动分类汇总，生成带格式的汇总表，自动加边框和合计行。'
+  },
+  mergeSheets: {
+    params: '每个Sheet有表头：是，添加来源列：是',
+    output: 'Sub 多表合并到总表()\n  ...\n  MsgBox "合并完成！共 X 个Sheet..."\nEnd Sub',
+    note: '把当前工作簿所有Sheet的数据合并到一张总表，最前面加"来源表"列，标注每行数据来自哪个Sheet。'
+  },
+  splitByColumn: {
+    params: '数据表：Sheet1，拆分依据列：B，起始行：2，表头行：1',
+    output: 'Sub 按列拆分工作表()\n  ...\n  MsgBox "拆分完成！共 X 个分组..."\nEnd Sub',
+    note: '按指定列的值拆分，每个值创建一个新Sheet，自动复制表头。比如按部门、按月份拆分。'
+  },
+  markDuplicates: {
+    params: '数据表：Sheet1，判断重复的列：A，起始行：2',
+    output: 'Sub 标记重复数据()\n  ...\n  MsgBox "标记完成！共发现 X 条重复..."\nEnd Sub',
+    note: '按指定列判断，首次出现的不标，重复出现的单元格标黄色，保留原始数据不删除。'
+  },
+  batchFormat: {
+    params: '数据表：Sheet1，金额列：D，表头行：1，最后一列：F',
+    output: 'Sub 批量设置表格格式()\n  ...\n  MsgBox "格式设置完成！"\nEnd Sub',
+    note: '自动完成：金额列千分位、表头加粗加底色、全表加边框、自动列宽。'
+  },
+  amountToChinese: {
+    params: '数字金额列：D，结果输出列：E，起始行：2',
+    output: 'Sub 金额转中文大写()\n  ...\n  Function NumToChinese()\n  ...\nEnd Sub',
+    note: '数字金额自动转中文大写，如 1234.56 → 壹仟贰佰叁拾肆元伍角陆分，用于报销单、支票。'
+  }
+};
+
+function showExample() {
+  const ex = EXAMPLES[currentScene];
+  if (!ex) return;
+  document.getElementById('exampleTitle').textContent = SCENES[currentScene].name + ' - 使用示例';
+  document.getElementById('exampleBody').innerHTML = `
+    <div class="example-block">
+      <strong>输入参数示例</strong>
+      ${ex.params}
+    </div>
+    <div class="example-block">
+      <strong>生成的代码结构</strong>
+      <pre>${ex.output}</pre>
+    </div>
+    <div class="example-block">
+      <strong>运行效果</strong>
+      ${ex.note}
+    </div>
+  `;
+  document.getElementById('exampleModal').classList.add('show');
+}
+
+function closeExample() {
+  document.getElementById('exampleModal').classList.remove('show');
+}
+
+// ===== 下载功能 =====
+function downloadCode() {
+  const code = document.getElementById('codeArea').textContent;
+  if (!code || code.includes('选择左侧场景')) {
+    alert('请先生成代码');
+    return;
+  }
+  const filename = SCENES[currentScene].filename;
+  const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ===== 渲染参数表单 =====
@@ -708,6 +1185,15 @@ function copyCode() {
 renderSceneList();
 renderParams();
 </script>
+
+<!-- 示例弹窗 -->
+<div class="example-modal" id="exampleModal">
+  <div class="example-content">
+    <h3 id="exampleTitle"></h3>
+    <div id="exampleBody"></div>
+    <button class="close-modal" onclick="closeExample()">关闭</button>
+  </div>
+</div>
 
 </body>
 </html>

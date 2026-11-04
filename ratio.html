@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>财务比率分析报告 - 财务工具箱</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%231a3c34'/><text x='50' y='68' font-size='45' text-anchor='middle' fill='%23c9a96e' font-family='monospace'>%</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%2360a5fa'/><text x='50' y='68' font-size='45' text-anchor='middle' fill='%23ffffff' font-family='monospace'>%</text></svg>">
 <script src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
   :root {
-    --primary: #1a3c34;
-    --primary-light: #2d5a4f;
-    --accent: #c9a96e;
-    --bg: #f5f5f2;
+    --primary: #3b82f6;
+    --primary-light: #93c5fd;
+    --accent: #60a5fa;
+    --bg: #f0f9ff;
     --surface: #ffffff;
-    --border: #e0e0dc;
-    --text: #2c2c2c;
-    --text-secondary: #6b6b6b;
+    --border: #e0f2fe;
+    --text: #0c4a6e;
+    --text-secondary: #64748b;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -26,8 +26,8 @@
   }
 
   header {
-    background: var(--primary);
-    color: #fff;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    color: var(--text);
     padding: 20px 32px;
     display: flex;
     align-items: center;
@@ -37,13 +37,14 @@
     font-size: 18px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    color: #0c4a6e;
   }
-  header h1 span { color: var(--accent); }
+  header h1 span { color: #3b82f6; }
   .back-link {
-    color: #fff;
+    color: #0c4a6e;
     text-decoration: none;
     font-size: 13px;
-    opacity: 0.8;
+    opacity: 0.7;
   }
   .back-link:hover { opacity: 1; }
 

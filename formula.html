@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Excel公式生成器</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%231a3c34'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23c9a96e' font-family='monospace'>fx</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%2360a5fa'/><text x='50' y='68' font-size='50' text-anchor='middle' fill='%23ffffff' font-family='monospace'>fx</text></svg>">
 <style>
   :root {
-    --primary: #1a3c34;
-    --primary-light: #2d5a4f;
-    --accent: #c9a96e;
-    --bg: #f5f5f2;
+    --primary: #3b82f6;
+    --primary-light: #93c5fd;
+    --accent: #60a5fa;
+    --bg: #f0f9ff;
     --surface: #ffffff;
-    --border: #e0e0dc;
-    --text: #2c2c2c;
-    --text-secondary: #6b6b6b;
-    --code-bg: #1e1e1e;
-    --code-text: #d4d4d4;
+    --border: #e0f2fe;
+    --text: #0c4a6e;
+    --text-secondary: #64748b;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -28,8 +28,8 @@
 
   /* ===== 顶部 ===== */
   header {
-    background: var(--primary);
-    color: #fff;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    color: var(--text);
     padding: 20px 32px;
     display: flex;
     align-items: center;
@@ -39,14 +39,16 @@
     font-size: 18px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    color: #0c4a6e;
   }
-  header h1 span { color: var(--accent); }
+  header h1 span { color: #3b82f6; }
   .privacy-badge {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    opacity: 0.9;
+    color: #0c4a6e;
+    opacity: 0.8;
   }
   .privacy-badge .dot {
     width: 8px; height: 8px;
@@ -69,13 +71,29 @@
     padding: 24px 0;
   }
   .scene-panel .panel-title {
-    padding: 0 20px 16px;
+    padding: 0 20px 12px;
     font-size: 12px;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
+  }
+  .search-box {
+    padding: 0 20px 16px;
     border-bottom: 1px solid var(--border);
     margin-bottom: 12px;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    background: #f8fafc;
+  }
+  .search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
   }
   .scene-item {
     padding: 14px 20px;
@@ -83,10 +101,10 @@
     border-left: 3px solid transparent;
     transition: all 0.15s;
   }
-  .scene-item:hover { background: #f0f0ec; }
+  .scene-item:hover { background: #f0f9ff; }
   .scene-item.active {
-    border-left-color: var(--accent);
-    background: #f8f4ea;
+    border-left-color: var(--primary);
+    background: #eff6ff;
   }
   .scene-item .name {
     font-size: 14px;
@@ -96,6 +114,77 @@
   .scene-item .desc {
     font-size: 12px;
     color: var(--text-secondary);
+  }
+
+  /* 示例弹窗 */
+  .example-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .example-modal.show { display: flex; }
+  .example-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .example-content h3 {
+    font-size: 17px;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .example-content .example-block {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .example-content .example-block strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--primary);
+  }
+  .example-content pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  .close-modal {
+    margin-top: 12px;
+    padding: 8px 24px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .download-btn {
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .download-btn:hover {
+    border-color: var(--accent);
+    color: var(--primary);
   }
 
   /* ===== 中间参数区 ===== */
@@ -281,7 +370,10 @@
 
   <!-- 左侧场景选择 -->
   <aside class="scene-panel">
-    <div class="panel-title">常用公式</div>
+    <div class="panel-title">公式列表</div>
+    <div class="search-box">
+      <input type="text" id="sceneSearch" placeholder="搜索公式，如：查找、条件..." oninput="renderSceneList()">
+    </div>
     <div id="sceneList"></div>
   </aside>
 
@@ -290,14 +382,20 @@
     <h2 id="sceneName"></h2>
     <p class="scene-desc" id="sceneDesc"></p>
     <div id="paramForm"></div>
-    <button class="generate-btn" onclick="generateCode()">生成 Excel 公式</button>
+    <div style="display:flex;gap:12px;">
+      <button class="generate-btn" style="flex:1;" onclick="generateCode()">生成 Excel 公式</button>
+      <button class="download-btn" style="padding:10px 16px;" onclick="showExample()">查看示例</button>
+    </div>
   </section>
 
   <!-- 右侧公式预览 -->
   <section class="code-panel">
     <div class="code-header">
       <span class="code-title" id="codeFilename">' 生成的公式</span>
-      <button class="copy-btn" id="copyBtn" onclick="copyCode()">复制公式</button>
+      <div style="display:flex;gap:8px;">
+        <button class="download-btn" onclick="downloadFormula()">下载 .txt</button>
+        <button class="copy-btn" id="copyBtn" onclick="copyCode()">复制公式</button>
+      </div>
     </div>
     <div class="code-area" id="codeArea">
       <span class="code-placeholder">// 选择左侧场景，填写参数后点击「生成 Excel 公式」</span>
@@ -460,6 +558,117 @@ const SCENES = {
       return { formula, explain };
     }
   },
+
+  indexMatch: {
+    name: 'INDEX+MATCH 查找',
+    desc: '比VLOOKUP更灵活的查找方式，支持反向查找、列顺序无关。',
+    filename: 'INDEX+MATCH',
+    params: [
+      { key: 'lookupValue', label: '查找值', type: 'text', default: 'A2' },
+      { key: 'matchRange', label: '查找列', type: 'text', default: 'Sheet2!A:A', hint: '在这列里找' },
+      { key: 'returnRange', label: '返回列', type: 'text', default: 'Sheet2!B:B', hint: '返回这列的值' },
+    ],
+    generate: (p) => {
+      const formula = `=INDEX(${p.returnRange}, MATCH(${p.lookupValue}, ${p.matchRange}, 0))`;
+      const explain = `先在 ${p.matchRange} 找到 ${p.lookupValue} 所在行号，再从 ${p.returnRange} 返回对应行的值。优势：查找列和返回列顺序无关，支持反向查找。`;
+      return { formula, explain };
+    }
+  },
+
+  sumproduct: {
+    name: 'SUMPRODUCT 多条件',
+    desc: '不用数组公式的多条件求和/计数，兼容性好，老版本Excel也能用。',
+    filename: 'SUMPRODUCT',
+    params: [
+      { key: 'sumRange', label: '求和区域', type: 'text', default: 'D:D', hint: '要求和的金额列' },
+      { key: 'crit1Range', label: '条件1区域', type: 'text', default: 'B:B', hint: '如 B 列（部门）' },
+      { key: 'crit1', label: '条件1', type: 'text', default: '"财务部"', hint: '如 "财务部" 或 ">1000"' },
+      { key: 'crit2Range', label: '条件2区域', type: 'text', default: 'C:C', hint: '如 C 列（月份）' },
+      { key: 'crit2', label: '条件2', type: 'text', default: '">=2024-01-01"', hint: '如 ">2024-01-01"' },
+    ],
+    generate: (p) => {
+      const formula = `=SUMPRODUCT((${p.crit1Range}=${p.crit1})*(${p.crit2Range}=${p.crit2})*${p.sumRange})`;
+      const explain = `同时满足条件1（${p.crit1Range} = ${p.crit1}）和条件2（${p.crit2Range} = ${p.crit2}）时，对 ${p.sumRange} 求和。SUMPRODUCT不需要按Ctrl+Shift+Enter，直接回车即可。`;
+      return { formula, explain };
+    }
+  },
+
+  iferror: {
+    name: 'IFERROR 错误处理',
+    desc: '包装任何公式，出错时返回指定提示，避免#N/A、#DIV/0!等难看的错误值。',
+    filename: 'IFERROR',
+    params: [
+      { key: 'innerFormula', label: '原公式', type: 'text', default: 'VLOOKUP(A2, Sheet2!A:B, 2, FALSE)', hint: '你原来的公式' },
+      { key: 'defaultValue', label: '出错时显示', type: 'text', default: '0', hint: '如 0、"未找到"、""（空）' },
+    ],
+    generate: (p) => {
+      const formula = `=IFERROR(${p.innerFormula}, ${p.defaultValue})`;
+      const explain = `如果「${p.innerFormula}」计算出错（如 #N/A、#DIV/0!），就显示 ${p.defaultValue}；否则正常显示计算结果。`;
+      return { formula, explain };
+    }
+  },
+
+  averageifs: {
+    name: 'AVERAGEIFS 多条件平均',
+    desc: '按多个条件计算平均值，如"计算部门A、2024年的平均工资"。',
+    filename: 'AVERAGEIFS',
+    params: [
+      { key: 'avgRange', label: '求平均区域', type: 'text', default: 'D:D', hint: '要求平均的数值列' },
+      { key: 'crit1Range', label: '条件1区域', type: 'text', default: 'B:B' },
+      { key: 'crit1', label: '条件1', type: 'text', default: '"销售部"' },
+      { key: 'crit2Range', label: '条件2区域（可选）', type: 'text', default: 'C:C' },
+      { key: 'crit2', label: '条件2（可选）', type: 'text', default: '">10000"' },
+    ],
+    generate: (p) => {
+      const formula = `=AVERAGEIFS(${p.avgRange}, ${p.crit1Range}, ${p.crit1}, ${p.crit2Range}, ${p.crit2})`;
+      const explain = `在满足条件（${p.crit1Range} = ${p.crit1} 且 ${p.crit2Range} ${p.crit2}）的行中，计算 ${p.avgRange} 的平均值。`;
+      return { formula, explain };
+    }
+  },
+
+  conditionalFormat: {
+    name: '条件格式公式',
+    desc: '常用条件格式公式：标记重复值、过期日期、低于平均值等。',
+    filename: '条件格式',
+    params: [
+      { key: 'cfType', label: '条件类型', type: 'select', options: ['标记重复值', '标记到期/过期', '低于平均值标红', '周末高亮'], default: 0 },
+      { key: 'range', label: '应用范围', type: 'text', default: 'A2:A100', hint: '如 A2:A100' },
+      { key: 'dateCell', label: '日期单元格', type: 'text', default: 'A2', hint: '日期判断时用' },
+    ],
+    generate: (p) => {
+      let formula, explain;
+      if (p.cfType.includes('重复')) {
+        formula = `=COUNTIF($A:$A, A2)>1`;
+        explain = `在条件格式中输入此公式，选中 ${p.range}，即可标记出所有重复值。首次出现不标，重复的标色。`;
+      } else if (p.cfType.includes('到期')) {
+        formula = `=AND(${p.dateCell}<>"", ${p.dateCell}-TODAY()<=30)`;
+        explain = `选中 ${p.range}，设置条件格式公式。距离今天≤30天的日期会被标记（即将到期提醒）。`;
+      } else if (p.cfType.includes('平均值')) {
+        formula = `=A2<AVERAGE($A$2:$A$100)`;
+        explain = `选中 ${p.range}，低于平均值的单元格标红。可改成 > 表示高于平均值。`;
+      } else {
+        formula = `=WEEKDAY(A2, 2)>5`;
+        explain = `选中日期列，周末（周六周日）高亮显示。WEEKDAY第二参数为2时，周一=1，周日=7。`;
+      }
+      return { formula, explain };
+    }
+  },
+
+  npv: {
+    name: 'NPV 净现值',
+    desc: '计算投资项目净现值，判断项目是否可行。财务分析常用。',
+    filename: 'NPV',
+    params: [
+      { key: 'rate', label: '折现率', type: 'text', default: '0.08', hint: '如 0.08 表示 8%' },
+      { key: 'cashflow1', label: '第1年现金流', type: 'text', default: 'B2', hint: '注意：初始投资在B2，第1年收益在B3...' },
+      { key: 'cashflowN', label: '第N年现金流', type: 'text', default: 'B5', hint: '最后一年的单元格' },
+    ],
+    generate: (p) => {
+      const formula = `=NPV(${p.rate}, ${p.cashflow1}:${p.cashflowN})`;
+      const explain = `按 ${p.rate} 的折现率，计算 ${p.cashflow1} 到 ${p.cashflowN} 期间现金流的净现值。NPV>0 表示项目可行，NPV<0 表示不可行。注意：初始投资（第0年）如果在现金流连外，要单独加：=NPV(0.08, B3:B5)+B2`;
+      return { formula, explain };
+    }
+  }
 };
 
 // ===== 状态 =====
@@ -468,14 +677,131 @@ let currentScene = 'vlookup';
 // ===== 渲染场景列表 =====
 function renderSceneList() {
   const container = document.getElementById('sceneList');
+  const searchVal = document.getElementById('sceneSearch').value.toLowerCase();
   container.innerHTML = '';
+  let count = 0;
   Object.entries(SCENES).forEach(([key, scene]) => {
+    if (searchVal && !scene.name.toLowerCase().includes(searchVal) && !scene.desc.toLowerCase().includes(searchVal)) return;
+    count++;
     const item = document.createElement('div');
     item.className = 'scene-item' + (key === currentScene ? ' active' : '');
     item.innerHTML = `<div class="name">${scene.name}</div><div class="desc">${scene.desc.slice(0, 15)}...</div>`;
     item.onclick = () => { currentScene = key; renderSceneList(); renderParams(); };
     container.appendChild(item);
   });
+  if (count === 0) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:13px;">未找到匹配公式</div>';
+  }
+}
+
+// ===== 示例功能 =====
+const EXAMPLES = {
+  vlookup: {
+    params: '查找值：A2，查找区域：Sheet2!A:D，返回列数：3，匹配方式：精确匹配',
+    output: '=VLOOKUP(A2, Sheet2!A:D, 3, FALSE)',
+    note: '在Sheet2的A列找A2的值，找到后返回同一行第3列（C列）的数据，精确匹配。'
+  },
+  xlookup: {
+    params: '查找值：A2，查找范围：Sheet2!A:A，返回范围：Sheet2!B:B，找不到："未找到"',
+    output: '=XLOOKUP(A2, Sheet2!A:A, Sheet2!B:B, "未找到")',
+    note: '比VLOOKUP更灵活，支持反向查找、列顺序无关，找不到时显示"未找到"而不是错误。'
+  },
+  sumifs: {
+    params: '求和区域：D:D，条件1区域：B:B，条件1："财务部"',
+    output: '=SUMIFS(D:D, B:B, "财务部")',
+    note: '对D列求和，只统计B列等于"财务部"的行。可以加多个条件。'
+  },
+  countifs: {
+    params: '条件1区域：B:B，条件1："财务部"，条件2区域：C:C，条件2：">2024-01-01"',
+    output: '=COUNTIFS(B:B, "财务部", C:C, ">2024-01-01")',
+    note: '统计同时满足多个条件的行数，这里统计财务部2024年以后的记录数。'
+  },
+  ifnested: {
+    params: '判断值：A2，条件1：">90"，结果1："优秀"，条件2：">80"，结果2："良好"',
+    output: '=IF(A2>90,"优秀",IF(A2>80,"良好","及格"))',
+    note: '多条件分级判断，常用于绩效评级、账龄分析、风险等级划分。'
+  },
+  date: {
+    params: '日期单元格：A2，选择函数：YEAR',
+    output: '=YEAR(A2)',
+    note: '从日期中提取年份，同理有MONTH、DAY，还有DATEDIF计算两个日期相差天数/月数。'
+  },
+  text: {
+    params: '文本单元格：A2，选择函数：LEFT',
+    output: '=LEFT(A2, 3)',
+    note: '从文本左边提取3个字符，同理MID中间提取、RIGHT右边提取，CONCAT拼接。'
+  },
+  indexMatch: {
+    params: '查找值：A2，查找列：Sheet2!A:A，返回列：Sheet2!B:B',
+    output: '=INDEX(Sheet2!B:B, MATCH(A2, Sheet2!A:A, 0))',
+    note: '先MATCH找到行号，再INDEX返回对应值。优势：查找列和返回列顺序无关，支持反向查找。'
+  },
+  sumproduct: {
+    params: '求和区域：D:D，条件1区域：B:B，条件1："财务部"，条件2区域：C:C，条件2：">2024-01-01"',
+    output: '=SUMPRODUCT((B:B="财务部")*(C:C>2024-01-01)*D:D)',
+    note: '多条件求和，老版本Excel也能用，不需要按Ctrl+Shift+Enter，直接回车。'
+  },
+  iferror: {
+    params: '原公式：VLOOKUP(A2, Sheet2!A:B, 2, FALSE)，出错显示：0',
+    output: '=IFERROR(VLOOKUP(A2, Sheet2!A:B, 2, FALSE), 0)',
+    note: 'VLOOKUP找不到时本来会显示#N/A，用IFERROR包装后显示0，表格更干净。'
+  },
+  averageifs: {
+    params: '求平均区域：D:D，条件1区域：B:B，条件1："销售部"',
+    output: '=AVERAGEIFS(D:D, B:B, "销售部")',
+    note: '计算销售部所有记录的平均值，可加多个条件。'
+  },
+  conditionalFormat: {
+    params: '条件类型：标记重复值，应用范围：A2:A100',
+    output: '=COUNTIF($A:$A, A2)>1',
+    note: '在条件格式中输入公式，重复值会自动标色，不用手动找。'
+  },
+  npv: {
+    params: '折现率：0.08，第1年现金流：B2，第N年现金流：B5',
+    output: '=NPV(0.08, B2:B5)',
+    note: '按8%折现率计算净现值，NPV>0表示项目可行，NPV<0表示不可行。'
+  }
+};
+
+function showExample() {
+  const ex = EXAMPLES[currentScene];
+  if (!ex) return;
+  document.getElementById('exampleTitle').textContent = SCENES[currentScene].name + ' - 使用示例';
+  document.getElementById('exampleBody').innerHTML = `
+    <div class="example-block">
+      <strong>输入参数示例</strong>
+      ${ex.params}
+    </div>
+    <div class="example-block">
+      <strong>生成的公式</strong>
+      <pre>${ex.output}</pre>
+    </div>
+    <div class="example-block">
+      <strong>效果说明</strong>
+      ${ex.note}
+    </div>
+  `;
+  document.getElementById('exampleModal').classList.add('show');
+}
+
+function closeExample() {
+  document.getElementById('exampleModal').classList.remove('show');
+}
+
+// ===== 下载功能 =====
+function downloadFormula() {
+  const code = document.getElementById('codeArea').textContent;
+  if (!code || code.includes('选择左侧场景')) {
+    alert('请先生成公式');
+    return;
+  }
+  const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = SCENES[currentScene].filename + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ===== 渲染参数表单 =====
@@ -555,6 +881,15 @@ function copyCode() {
 renderSceneList();
 renderParams();
 </script>
+
+<!-- 示例弹窗 -->
+<div class="example-modal" id="exampleModal">
+  <div class="example-content">
+    <h3 id="exampleTitle"></h3>
+    <div id="exampleBody"></div>
+    <button class="close-modal" onclick="closeExample()">关闭</button>
+  </div>
+</div>
 
 </body>
 </html>
